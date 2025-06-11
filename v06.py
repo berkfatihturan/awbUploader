@@ -65,9 +65,9 @@ def process_awb(req):
 
             for i in range(current_index, total):
                 item = data[i]
-                barcode = item.get("barcode", "none")
-                chute = item.get("chute", 0)
-                city = item.get("city", "unnamed")
+                barcode = item.get("barcode") or "none"
+                chute = item.get("chute") or 0
+                city = item.get("city") or "unnamed"
                 order_name = f"{awb_number}_{awb_id}_200"
 
                 stock_id = stock_cache.get(barcode)
