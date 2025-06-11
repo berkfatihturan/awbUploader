@@ -12,6 +12,7 @@ def log(msg):
 
 
 def process_awb(req):
+    global error_info
     awb_id = req['id']
     awb_number = req['awb_number']
     order_id = req['order_id']
@@ -157,7 +158,29 @@ def process_awb(req):
             db.close()
         except:
             pass
-        log(f"💥 Genel hata: {e}")
+
+        try:
+            error_info = {
+                "awb_number": awb_number,
+                "awb_id": awb_id,
+                "user_id": user_id,
+                "order_id": order_id,
+                "current_index": current_index,
+                "current_item": item if 'item' in locals() else "YOK"
+            }
+            cursor.execute(
+                "UPDATE awb_requests SET status = %s, msg = %s, updated_at = NOW() WHERE id = %s",
+                ("Fail", str(e), awb_id)
+            )
+            db.commit()
+            db.close()
+        except Exception as inner_e:
+            log(f"‼️ Hata sırasında awb_requests güncellenemedi: {inner_e}")
+
+        log("💥 Genel hata:")
+        for key, value in error_info.items():
+            log(f"   🔹 {key}: {value}")
+        log(f"   ❌ Hata Mesajı: {e}")
 
 
 class Uploader:
