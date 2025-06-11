@@ -24,7 +24,7 @@ def process_awb(req):
 
     try:
         db = mysql.connector.connect(host="localhost", port=3307, user="root", password="", database="SmartEmkWarehouseDB", allow_local_infile=True)
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor(dictionary=True,buffered=True)
 
         cursor.execute("SELECT name FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
